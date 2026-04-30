@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Consultant Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0d0d;
+    --surface: #141414;
+    --surface2: #1c1c1c;
+    --border: #2a2a2a;
+    --accent: #c8f135;
+    --accent-dim: rgba(200,241,53,0.12);
+    --text: #f0ede6;
+    --text-muted: #6b6b6b;
+    --text-dim: #3a3a3a;
+    --danger: #ff4f4f;
+    --success: #c8f135;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 1rem 6rem;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+  }
+
+  h1 em {
+    color: var(--accent);
+    font-style: normal;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 640px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .card-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-title::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  .field { margin-bottom: 1.25rem; }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    letter-spacing: 0.04em;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.15s;
+    appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: var(--text-dim);
+  }
+
+  select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b6b6b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  select option { background: #1c1c1c; }
+
+  textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
+
+  .webhook-row { display: flex; gap: 8px; }
+  .webhook-row input { flex: 1; font-family: 'DM Mono', monospace; font-size: 12px; }
+
+  .copy-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 0 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .submit-btn {
+    width: 100%;
+    background: var(--accent);
+    border: none;
+    border-radius: 3px;
+    color: #0d0d0d;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 13px;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: opacity 0.15s, transform 0.1s;
+    margin-top: 0.5rem;
+  }
+
+  .submit-btn:hover { opacity: 0.88; }
+  .submit-btn:active { transform: scale(0.99); }
+  .submit-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+  .status-bar {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 12px;
+    min-height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 1s ease-in-out infinite;
+    display: none;
+  }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .result-card {
+    width: 100%;
+    max-width: 640px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    display: none;
+  }
+
+  .result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .result-header span {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .result-header .ok-badge {
+    background: var(--accent-dim);
+    color: var(--accent);
+    border: 1px solid rgba(200,241,53,0.3);
+    padding: 2px 10px;
+    border-radius: 2px;
+    font-size: 10px;
+  }
+
+  .result-body {
+    padding: 1.5rem;
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: var(--text);
+    font-weight: 300;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 520px;
+    overflow-y: auto;
+  }
+
+  .result-body::-webkit-scrollbar { width: 4px; }
+  .result-body::-webkit-scrollbar-track { background: transparent; }
+  .result-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .result-body h2, .result-body strong {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .footer {
+    margin-top: 3rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-align: center;
+  }
+
+  .error-msg { color: var(--danger); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">Proyecto portfolio</div>
+  <h1>AI <em>Consultant</em><br>Assistant</h1>
+  <p class="subtitle">Transforma un caso de negocio en una propuesta estratégica con IA</p>
+</header>
+
+<div class="card">
+  <div class="card-title">Configuración del caso</div>
+
+  <div class="field">
+    <label>Industria</label>
+    <select id="industria">
+      <option value="retail">Retail</option>
+      <option value="salud">Salud</option>
+      <option value="finanzas">Finanzas</option>
+      <option value="logística">Logística</option>
+      <option value="educación">Educación</option>
+      <option value="manufactura">Manufactura</option>
+      <option value="tecnología">Tecnología</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Caso de negocio</label>
+    <textarea id="caso" placeholder="Ej: Empresa retail quiere mejorar ventas con IA, reducir devoluciones y personalizar recomendaciones para cada cliente..."></textarea>
+  </div>
+
+  <div class="field">
+    <label>URL del Webhook (n8n)</label>
+    <div class="webhook-row">
+      <input type="text" id="webhook-url" placeholder="http://localhost:5678/webhook-test/ai-consultant" />
+      <button class="copy-btn" onclick="pasteUrl()">Pegar</button>
+    </div>
+  </div>
+
+  <button class="submit-btn" id="submit-btn" onclick="enviar()">Generar propuesta estratégica →</button>
+
+  <div class="status-bar">
+    <div class="dot" id="dot"></div>
+    <span id="status"></span>
+  </div>
+</div>
+
+<div class="result-card" id="result-card">
+  <div class="result-header">
+    <span>Output generado</span>
+    <span class="ok-badge" id="ok-badge">OK</span>
+  </div>
+  <div class="result-body" id="result-body"></div>
+</div>
+
+<div class="footer">AI Consultant Assistant &mdash; n8n + Ollama + Docker</div>
+
+<script>
+async function pasteUrl() {
+  try {
+    const text = await navigator.clipboard.readText();
+    document.getElementById('webhook-url').value = text;
+  } catch {
+    document.getElementById('webhook-url').focus();
+  }
+}
+
+function setStatus(msg, isError) {
+  const s = document.getElementById('status');
+  s.textContent = msg;
+  s.className = isError ? 'error-msg' : '';
+}
+
+function setLoading(on) {
+  document.getElementById('dot').style.display = on ? 'block' : 'none';
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = on;
+  btn.textContent = on ? 'Generando propuesta...' : 'Generar propuesta estratégica →';
+}
+
+async function enviar() {
+  const industria = document.getElementById('industria').value;
+  const caso = document.getElementById('caso').value.trim();
+  const url = document.getElementById('webhook-url').value.trim();
+
+  if (!caso) { setStatus('Escribe el caso de negocio.', true); return; }
+  if (!url)  { setStatus('Pega la URL del webhook de n8n.', true); return; }
+
+  setLoading(true);
+  setStatus('Enviando a n8n... puede tardar 2-5 min con CPU.');
+  document.getElementById('result-card').style.display = 'none';
+
+  const prompt = `Actúa como consultor de IA estratégico. Una empresa del sector ${industria} te presenta este caso: ${caso}.\n\nGenera exactamente esto:\n\n## 3 Oportunidades estratégicas con IA\nPara cada una: nombre, problema que resuelve, impacto esperado.\n\n## Propuesta de solución recomendada\nTecnología sugerida, fases de implementación, recursos necesarios.\n\n## Estructura de presentación\nMínimo 6 slides con título y contenido de cada una.`;
+
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ empresa: prompt })
+    });
+    const data = await res.json();
+    const texto = data?.text || data?.output || data?.message || JSON.stringify(data, null, 2);
+
+    document.getElementById('result-body').textContent = texto;
+    document.getElementById('result-card').style.display = 'block';
+    document.getElementById('ok-badge').textContent = new Date().toLocaleTimeString();
+    setStatus('Propuesta generada con éxito.');
+    document.getElementById('result-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (err) {
+    setStatus('Error: ' + err.message + ' — verifica que n8n esté en modo escucha.', true);
+  }
+
+  setLoading(false);
+}
+</script>
+</body>
+</html>

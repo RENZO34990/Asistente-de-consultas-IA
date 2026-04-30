@@ -1,0 +1,281 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        448,
+        0
+      ],
+      "id": "067ed3c8-fc94-46aa-862d-46d29d0a491e",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "llama3.2:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmOllama",
+      "typeVersion": 1,
+      "position": [
+        384,
+        208
+      ],
+      "id": "075cbb8d-d64b-424f-a610-491d313c83c8",
+      "name": "Ollama Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "q4FAtTQc1gIDZmN7",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1NJdFo_gaBg8N76HYctn9cFLlKWvLXmX_ayIq77gfZ8k",
+          "mode": "list",
+          "cachedResultName": "IA Consultant",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NJdFo_gaBg8N76HYctn9cFLlKWvLXmX_ayIq77gfZ8k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NJdFo_gaBg8N76HYctn9cFLlKWvLXmX_ayIq77gfZ8k/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fecha": "={{ $now }}",
+            "Empresa": "={{ $('Set').item.json.chatInput }}",
+            "Respuesta": "={{ $json.text }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Empresa",
+              "displayName": "Empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Respuesta",
+              "displayName": "Respuesta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        800,
+        0
+      ],
+      "id": "6dde07db-ef44-4691-acbe-2daf8a376c57",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ft9eTgRTZZ1lwHTi",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f77c8b51-e88e-4818-81b3-3e589f3c7376",
+              "name": "chatInput",
+              "value": "={{ $json.body.empresa }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        0
+      ],
+      "id": "bf5de5ed-f24f-4d37-9f4f-35be74f03aae",
+      "name": "Set"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ia-consultan",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "42d72596-b043-451a-bc58-e9a56df668b7",
+      "name": "Webhook",
+      "webhookId": "2f05ebb2-31cc-4f7f-ba97-76b5f1e8d508"
+    },
+    {
+      "parameters": {
+        "folderId": "default",
+        "title": "=Propuesta AI — {{ $now.toFormat('dd/MM/yyyy HH:mm') }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1008,
+        0
+      ],
+      "id": "901a5808-cd03-4a7b-a7df-5f356b4e6f2a",
+      "name": "Create a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "zTJbtJxHW1N8ppEm",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Basic LLM Chain').item.json.text }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1216,
+        0
+      ],
+      "id": "ce577818-102e-438d-9a17-9acea57c2759",
+      "name": "Update a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "zTJbtJxHW1N8ppEm",
+          "name": "Google Docs account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Ollama Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Create a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a document": {
+      "main": [
+        [
+          {
+            "node": "Update a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "d25f009c-bd5f-4bab-ba38-6607063d9472",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "73d27329bdb10653888f1dd81bbe7f83c2ea1de378367f6219ce968b3061b106"
+  },
+  "id": "M39LP0Yyw3uY88Mb9rUyM",
+  "tags": []
+}
