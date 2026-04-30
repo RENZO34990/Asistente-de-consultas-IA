@@ -1,4 +1,5 @@
 # Asistente-de-consultas-IA
+![Demo del proyecto](https://github.com/RENZO34990/Asistente-de-consultas-IA/blob/c866bb7675aba34cc3dd7440e8ccd2cb285c8b57/N8N.gif)
 Automatización de consultas con n8n, APIs y ollama
 
 > Transforma un caso de negocio en una propuesta estratégica completa usando IA generativa — de forma automatizada y 100% local.
