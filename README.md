@@ -140,10 +140,6 @@ Abre el archivo `ai-consultant.html` en tu navegador, pega la URL del webhook de
 - [ ] Versión multiidioma del prompt
 
 ---
-## Autor
-
-**Renzo Rojas** — Economía Internacional, [Universidad Nacional Mayor de San Marcos] · Lima, Perú
-[LinkedIn](www.linkedin.com/in/renzo-rojas-salazar-50841b286)
 
 ## Contexto
 
@@ -152,3 +148,10 @@ Proyecto personal desarrollado como demostración de capacidades en:
 - Integración de modelos LLM locales
 - Generación de entregables de consultoría con IA generativa
 - Stack AI-first sin dependencia de APIs de pago
+
+---
+## Autor
+
+**Renzo Rojas** — Economía Internacional, [Universidad Nacional Mayor de San Marcos] · Lima, Perú
+[LinkedIn](www.linkedin.com/in/renzo-rojas-salazar-50841b286)
+
