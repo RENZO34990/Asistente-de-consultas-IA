@@ -140,6 +140,10 @@ Abre el archivo `ai-consultant.html` en tu navegador, pega la URL del webhook de
 - [ ] Versión multiidioma del prompt
 
 ---
+## Autor
+
+**Renzo Rojas** — Economía Internacional, [Universidad Nacional Mayor de San Marcos] · Lima, Perú
+[LinkedIn](www.linkedin.com/in/renzo-rojas-salazar-50841b286)
 
 ## Contexto
 
