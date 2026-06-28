@@ -1,4 +1,4 @@
-# Asistente-de-consultas-IA
+# Asistente-de-consultas-IA (VULCAN)
 ![Demo del proyecto](https://github.com/RENZO34990/Asistente-de-consultas-IA/blob/c866bb7675aba34cc3dd7440e8ccd2cb285c8b57/N8N.gif)
 Automatización de consultas con n8n, APIs y ollama
 
